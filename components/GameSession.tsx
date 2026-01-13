@@ -27,7 +27,7 @@ const GameSession: React.FC<GameSessionProps> = ({ levels, modeName, difficulty,
 
   // Stats Tracking
   const startTimeRef = useRef<number>(Date.now());
-  const scoresRef = useRef<number[]>([]);
+  const allAttemptsRef = useRef<number[]>([]); 
   const perfectsRef = useRef<number>(0);
 
   const currentLevel = levels[currentIndex];
@@ -115,6 +115,9 @@ const GameSession: React.FC<GameSessionProps> = ({ levels, modeName, difficulty,
     const isPass = avgDiff <= currentLevel.tolerance;
     const calculatedScore = Math.max(0, Math.round((1 - avgDiff) * 100));
 
+    // Record every attempt
+    allAttemptsRef.current.push(calculatedScore);
+
     setScore(calculatedScore);
     
     if (isPass) {
@@ -129,14 +132,18 @@ const GameSession: React.FC<GameSessionProps> = ({ levels, modeName, difficulty,
   };
 
   const handleNext = () => {
-    scoresRef.current.push(score);
-    
     if (currentIndex < levels.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
       // Finished
       const endTime = Date.now();
-      const avg = scoresRef.current.reduce((a, b) => a + b, 0) / scoresRef.current.length;
+      
+      // Calculate average over ALL attempts
+      const totalScore = allAttemptsRef.current.reduce((a, b) => a + b, 0);
+      const avg = allAttemptsRef.current.length > 0 
+        ? totalScore / allAttemptsRef.current.length 
+        : 0;
+
       onComplete({
         mode: modeName,
         difficulty: difficulty,

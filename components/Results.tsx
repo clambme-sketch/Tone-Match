@@ -9,7 +9,13 @@ interface ResultsProps {
 }
 
 const Results: React.FC<ResultsProps> = ({ stats, onRestart, onMenu }) => {
-  const timeTaken = ((stats.endTime - stats.startTime) / 1000).toFixed(1);
+  const totalSeconds = Math.floor((stats.endTime - stats.startTime) / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  
+  const timeDisplay = minutes > 0 
+    ? `${minutes}m ${seconds.toString().padStart(2, '0')}s` 
+    : `${seconds}s`;
 
   return (
     <div className="w-full max-w-lg bg-gray-900 border border-gray-800 p-8 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-500 text-center">
@@ -24,7 +30,7 @@ const Results: React.FC<ResultsProps> = ({ stats, onRestart, onMenu }) => {
         </div>
         <div className="p-6 bg-gray-800 rounded-xl border border-gray-700 flex flex-col items-center">
           <Clock className="text-blue-400 mb-3" size={32} />
-          <div className="text-3xl font-bold text-white">{timeTaken}s</div>
+          <div className="text-3xl font-bold text-white">{timeDisplay}</div>
           <div className="text-xs text-gray-500 uppercase font-bold mt-1">Total Time</div>
         </div>
       </div>

@@ -32,33 +32,40 @@ const MainMenu: React.FC<MainMenuProps> = ({ onSelectMode, catCount }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full px-4">
         {/* Challenge Mode */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 flex flex-col justify-between hover:border-blue-500/50 transition-colors shadow-lg">
-          <div className="text-left mb-6">
-            <div className="p-3 bg-blue-600/20 w-fit rounded-lg text-blue-400 mb-4">
+        <div className="group relative bg-gray-900 border border-gray-800 hover:border-blue-500 rounded-2xl p-6 flex flex-col justify-between transition-all hover:-translate-y-1 hover:shadow-xl text-left overflow-hidden h-full">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
+            <Trophy size={100} />
+          </div>
+          
+          <div className="relative z-10">
+            <div className="p-3 bg-blue-600/20 w-fit rounded-lg text-blue-400 mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
               <Trophy size={24} />
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Challenge Mode</h3>
-            <p className="text-sm text-gray-400">10 levels of increasing difficulty.</p>
+            <p className="text-sm text-gray-400 mb-6">10 levels of increasing difficulty.</p>
           </div>
           
-          <div className="space-y-2">
+          <div className="relative z-10 flex bg-gray-800 rounded-lg p-1">
             <button 
               onClick={() => handleStart('CHALLENGE', Difficulty.EASY)}
-              className="w-full py-2 bg-gray-800 hover:bg-blue-600 hover:text-white text-gray-300 rounded-lg text-sm font-bold transition-colors"
+              className="flex-1 py-2 text-xs font-bold text-gray-400 hover:text-white hover:bg-gray-700 rounded-md transition-colors"
+              title="Effects are On/Off"
             >
-              EASY (On/Off)
+              EASY
             </button>
             <button 
               onClick={() => handleStart('CHALLENGE', Difficulty.MEDIUM)}
-              className="w-full py-2 bg-gray-800 hover:bg-blue-600 hover:text-white text-gray-300 rounded-lg text-sm font-bold transition-colors"
+              className="flex-1 py-2 text-xs font-bold text-gray-400 hover:text-white hover:bg-gray-700 rounded-md transition-colors"
+              title="4 Steps"
             >
-              MEDIUM (4 Steps)
+              MEDIUM
             </button>
             <button 
               onClick={() => handleStart('CHALLENGE', Difficulty.HARD)}
-              className="w-full py-2 bg-gray-800 hover:bg-blue-600 hover:text-white text-gray-300 rounded-lg text-sm font-bold transition-colors"
+              className="flex-1 py-2 text-xs font-bold text-gray-400 hover:text-white hover:bg-gray-700 rounded-md transition-colors"
+              title="Fine Tuning"
             >
-              HARD (Fine Tune)
+              HARD
             </button>
           </div>
         </div>
