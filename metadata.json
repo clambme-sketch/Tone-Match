@@ -1,0 +1,5 @@
+{
+  "name": "Tone Match",
+  "description": "A focused ear training game where you match audio effects to a target sound using a synthesizer playing a pentatonic scale.",
+  "requestFramePermissions": []
+}
