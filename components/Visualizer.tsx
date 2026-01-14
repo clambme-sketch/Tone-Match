@@ -15,25 +15,34 @@ const Visualizer: React.FC = () => {
     const draw = () => {
       const analyser = audioService.getAnalyser();
       
+      // Use internal resolution
       const width = canvas.width;
       const height = canvas.height;
-      ctx.clearRect(0, 0, width, height);
-
+      
+      // Clear
+      ctx.fillStyle = '#111827'; // match gray-900 roughly
+      ctx.fillRect(0, 0, width, height);
+      
       if (analyser) {
         const bufferLength = analyser.frequencyBinCount;
+        
+        // --- FREQUENCY SPECTRUM ---
         const dataArray = new Uint8Array(bufferLength);
         analyser.getByteFrequencyData(dataArray);
 
-        ctx.fillStyle = 'rgba(59, 130, 246, 0.2)'; // Blue fill
-        ctx.beginPath();
-        
+        // Draw bars across the full width
         const barWidth = (width / bufferLength) * 2.5;
         let x = 0;
 
         for (let i = 0; i < bufferLength; i++) {
           const barHeight = (dataArray[i] / 255) * height;
+          // Simple gradient based on height/intensity
+          ctx.fillStyle = `rgba(59, 130, 246, ${Math.max(0.1, dataArray[i] / 255)})`; 
           ctx.fillRect(x, height - barHeight, barWidth, barHeight);
           x += barWidth + 1;
+          
+          // Stop if we go off screen
+          if (x > width) break;
         }
       }
 
@@ -50,8 +59,8 @@ const Visualizer: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full h-24 bg-gray-900 rounded-lg overflow-hidden border border-gray-800 shadow-inner">
-      <canvas ref={canvasRef} width={600} height={100} className="w-full h-full" />
+    <div className="w-full h-32 bg-gray-900 rounded-lg overflow-hidden border border-gray-800 shadow-inner">
+      <canvas ref={canvasRef} width={800} height={200} className="w-full h-full" />
     </div>
   );
 };

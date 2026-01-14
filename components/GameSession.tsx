@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Play, Pause, Check, Volume2, ArrowRight } from 'lucide-react';
+import { Play, Pause, Check, Volume2, ArrowRight, Volume1, VolumeX } from 'lucide-react';
 import { EffectParams, INITIAL_PARAMS, LevelConfig, GameState, GameStats, EFFECT_LABELS, Difficulty } from '../types';
 import { audioService } from '../services/AudioEngine';
 import EffectControl from './EffectControl';
@@ -24,6 +24,9 @@ const GameSession: React.FC<GameSessionProps> = ({ levels, modeName, difficulty,
   const [isPlaying, setIsPlaying] = useState<'target' | 'user' | null>(null);
   const [score, setScore] = useState(0);
   const [feedbackMsg, setFeedbackMsg] = useState('');
+  
+  // Volume State
+  const [volume, setVolume] = useState(0.4);
 
   // Stats Tracking
   const startTimeRef = useRef<number>(Date.now());
@@ -96,6 +99,11 @@ const GameSession: React.FC<GameSessionProps> = ({ levels, modeName, difficulty,
     await audioService.playToneSequence(userParams, () => setIsPlaying(null));
   };
 
+  const handleVolumeChange = (newVol: number) => {
+    setVolume(newVol);
+    audioService.setMasterVolume(newVol);
+  };
+
   const handleSubmit = () => {
     let totalDiff = 0;
     currentLevel.activeEffects.forEach(key => {
@@ -107,10 +115,6 @@ const GameSession: React.FC<GameSessionProps> = ({ levels, modeName, difficulty,
     });
     
     const avgDiff = totalDiff / currentLevel.activeEffects.length;
-    
-    // Dynamic tolerance based on difficulty could be used, but the level config tolerance works well.
-    // For Easy/Medium, since inputs snap, accuracy is usually 100% or 0% per effect.
-    // Hard allows getting 'close'.
     
     const isPass = avgDiff <= currentLevel.tolerance;
     const calculatedScore = Math.max(0, Math.round((1 - avgDiff) * 100));
@@ -221,11 +225,29 @@ const GameSession: React.FC<GameSessionProps> = ({ levels, modeName, difficulty,
               </button>
             </div>
             
-            {isPlaying && (
-              <button onClick={() => audioService.stop()} className="w-full py-3 text-red-400 bg-red-900/10 border border-red-900/50 rounded-lg text-sm font-semibold tracking-wide hover:bg-red-900/20">
-                STOP AUDIO
-              </button>
-            )}
+            <div className="flex gap-4 items-center">
+              {isPlaying ? (
+                <button onClick={() => audioService.stop()} className="flex-1 py-3 text-red-400 bg-red-900/10 border border-red-900/50 rounded-lg text-sm font-semibold tracking-wide hover:bg-red-900/20">
+                  STOP AUDIO
+                </button>
+              ) : (
+                <div className="flex-1"></div>
+              )}
+              
+              {/* Volume Slider */}
+              <div className="flex items-center gap-3 bg-gray-900 border border-gray-800 px-4 py-3 rounded-lg flex-1">
+                {volume === 0 ? <VolumeX size={18} className="text-gray-500" /> : <Volume1 size={18} className="text-gray-400" />}
+                <input 
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={volume}
+                  onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+                  className="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+            </div>
          </div>
 
          {/* Right: Controls */}

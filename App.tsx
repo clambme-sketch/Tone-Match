@@ -8,6 +8,10 @@ import Results from './components/Results';
 const CatWalker: React.FC<{ index: number }> = ({ index }) => {
   const duration = 15 + Math.random() * 20; 
   const delay = Math.random() * 10;
+  
+  // Every 5th cat (indices 4, 9, 14...) is a black cat
+  const isBlackCat = (index + 1) % 5 === 0;
+
   return (
     <div 
       className="absolute bottom-0 text-4xl select-none pointer-events-none"
@@ -16,10 +20,10 @@ const CatWalker: React.FC<{ index: number }> = ({ index }) => {
         animationDelay: `-${delay}s`,
         opacity: 0.8,
         zIndex: 10,
-        filter: 'grayscale(0.3)'
+        filter: isBlackCat ? 'none' : 'grayscale(0.3)'
       }}
     >
-      🐈
+      {isBlackCat ? '🐈‍⬛' : '🐈'}
     </div>
   );
 };

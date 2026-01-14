@@ -33,6 +33,13 @@ export class AudioEngine {
     return this.analyser;
   }
 
+  public setMasterVolume(value: number) {
+    if (this.ctx && this.masterGain) {
+      // Smooth transition to avoid clicking
+      this.masterGain.gain.setTargetAtTime(value, this.ctx.currentTime, 0.05);
+    }
+  }
+
   // Generate pentatonic scale frequencies starting at C4
   private getPentatonicScale(rootFreq: number = 261.63): number[] {
     // Pentatonic Major: Root, M2, M3, P5, M6
